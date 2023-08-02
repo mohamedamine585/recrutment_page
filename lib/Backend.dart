@@ -4,15 +4,41 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
 class Backend {
-  Future<void> get_applications() async {
+  Future<void> post_offer(
+      {required String title,
+      required String desc,
+      required DateTime deadline}) async {
     try {
-      print("object");
-      Response response = await http.get(Uri.parse("http://127.0.0.1:8000/"));
-      List<dynamic> applications = jsonDecode(response.body);
-      List<Map<String, dynamic>> apps =
-          applications.cast<Map<String, dynamic>>();
-      print(apps);
-      print(apps);
+      await http.post(Uri.parse("http://127.0.0.1:8000/post_offer/"), body: {
+        "title": title,
+        "description": desc,
+        "start": DateTime.now().toString(),
+        "deadline": deadline.toString(),
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> accept_app({required int id}) async {
+    try {
+      await http.put(Uri.parse("http://127.0.0.1:8000/accept_app/$id/"));
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> refuse_app({required int id}) async {
+    try {
+      await http.put(Uri.parse("http://127.0.0.1:8000/accept_app/$id/"));
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> delete_app({required int id}) async {
+    try {
+      await http.delete(Uri.parse("http://127.0.0.1:8000/delete_app/$id/"));
     } catch (e) {
       print(e);
     }
@@ -32,8 +58,6 @@ class Backend {
       (json.decode(offersreps.body) as List<dynamic>).forEach((element) {
         offers.add(element);
       });
-      print(offers);
-      print(apps);
       return [offers, apps];
     } catch (e) {
       print(e);
